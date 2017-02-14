@@ -13,23 +13,12 @@
     group: "{{ pgbouncer_admin_group }}"
     mode: 0600
 
-- name: "Stage 2: remove old userlist.txt"
-  file: state=absent dest={{ pgbouncer_auth_file }}
-
-- name: "Stage 2: create new empty userlist.txt"
-  file: 
-    state: touch
-    dest: "{{ pgbouncer_auth_file }}"
-    owner: "{{ pgbouncer_admin_user }}"
-    group: "{{ pgbouncer_admin_group }}"
-    mode: 0660
-
 - name: "Satge 2: add userlist.txt"
   template:
     src: userlist.txt.j2
-    dest: /etc/pgbouncer/userlist.txt
-    owner: pgbouncer
-    group: pgbouncer
+    dest: "{{ pgbouncer_auth_file }}"
+    owner: "{{ pgbouncer_admin_user }}"
+    group: "{{ pgbouncer_admin_group }}"
     mode: 0600
 
 - name: "Stage 2: prepare Systemd custom config folder"
