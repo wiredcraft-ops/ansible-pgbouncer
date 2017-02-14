@@ -23,33 +23,29 @@
     owner: "{{ pgbouncer_admin_user }}"
     group: "{{ pgbouncer_admin_group }}"
     mode: 0660
-  
-- name: "Stage 2: add users into userlist.txt"
-  sudo: yes
-  sudo_user: postgres
-  shell: psql -qAtXF' ' -c "select rolname,rolpassword from pg_authid where rolname = '{{ item }}'" |sed -e 's/^/\"/' -e 's/$/\"/' -e 's/ /\" \"/' >> {{ pgbouncer_auth_file }}
-  with_items: pgbouncer_allowed_users
 
-- name: "Stage 2: fix permissions userlist.txt"
-  file: 
-    state: file
-    dest: "{{ pgbouncer_auth_file }}"
+- name: "Satge 2: add userlist.txt"
+  template:
+    src: userlist.txt.j2
+    dest: /etc/pgbouncer/userlist.txt
+    owner: pgbouncer
+    group: pgbouncer
     mode: 0600
 
-- name: "Stage 2: Prepare Systemd custom config folder"
+- name: "Stage 2: prepare Systemd custom config folder"
   file:
     name: /etc/systemd/system/pgbouncer.service.d
     state: directory
     mode: 0755
 
-- name: "Stage 2: Add pgbouncer.service custom config"
+- name: "Stage 2: add pgbouncer.service custom config"
   template:
     src: etc_systemd_system_pgbouncer.service.d_custom.conf.j2
     dest: /etc/systemd/system/pgbouncer.service.d/custom.conf
     owner: root
   register: pgbouncer_systemd_custom_conf
 
-- name: "Stage 2: Restart pgbouncer"
+- name: "Stage 2: restart pgbouncer"
   systemd:
     name: pgbouncer
     state: restarted

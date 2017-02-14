@@ -14,12 +14,10 @@ pgbouncer_admin_user: pgbouncer
 pgbouncer_admin_group: postgres
 pgbouncer_stats_users:
  - zabbix
- - munin
 
 # PostgreSQL users which allowed connecting to the pools
 pgbouncer_allowed_users:
- - johndoe
- - vpupkin
+ - { name: "vpupkin", password: "password"}
 
 # pgbouncer.ini settings
 pgbouncer_logfile: /var/log/pgbouncer.log
