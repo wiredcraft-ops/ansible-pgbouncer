@@ -50,12 +50,11 @@
   register: pgbouncer_systemd_custom_conf
 
 - name: "Stage 2: Restart pgbouncer"
-  service:
+  systemd:
     name: pgbouncer
     state: restarted
     daemon_reload: yes
   when: pgbouncer_systemd_custom_conf.changed
-
 
 - name: "Stage 2: start pgbouncer"
   service:
